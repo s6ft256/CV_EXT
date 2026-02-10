@@ -189,36 +189,28 @@ def export_excel(batch_id: str) -> StreamingResponse:
     sheet = workbook.active
     sheet.title = "Resume Screening"
     headers = [
-        "Filename",
-        "Candidate",
+        "Name",
+        "Email",
         "Designation",
-        "Experience (Years)",
+        "Exp",
         "NEBOSH",
-        "ADOSH/OSHAD",
-        "LEVEL 6",
-        "Nature of Experience",
-        "Match Score",
-        "Inspector Highlight",
-        "Band Match",
-        "Missing Requirements",
+        "ADOSH",
+        "L6",
+        "Nature of Exp",
     ]
     sheet.append(headers)
 
     for row in rows:
         sheet.append(
             [
-                row["filename"],
                 row["full_name"],
+                row["email"],
                 row["designation"],
                 row["experience"],
                 row["nebosh"],
                 row["adosh"],
                 row["level_6"],
                 row["nature_of_experience"],
-                row["match_score"],
-                row["inspector_highlight"],
-                row["preferred_band"],
-                row["missing_requirements"],
             ]
         )
 
@@ -241,20 +233,18 @@ def export_pdf(batch_id: str) -> StreamingResponse:
     stream = BytesIO()
     doc = SimpleDocTemplate(stream, pagesize=landscape(A4), leftMargin=20, rightMargin=20, topMargin=20, bottomMargin=20)
 
-    data = [["Designation", "Experience", "NEBOSH", "ADOSH", "LEVEL 6", "Nature of Experience", "Candidate", "Score", "Inspector", "Band"]]
+    data = [["Name", "Email", "Designation", "Exp", "NEBOSH", "ADOSH", "L6", "Nature of Exp"]]
     for row in rows:
         data.append(
             [
+                row["full_name"],
+                row["email"],
                 row["designation"],
                 f"{row['experience']} Y",
                 row["nebosh"],
                 row["adosh"],
                 row["level_6"],
                 row["nature_of_experience"],
-                row["full_name"],
-                f"{row['match_score']}%",
-                row["inspector_highlight"],
-                row["preferred_band"],
             ]
         )
 
@@ -547,6 +537,7 @@ def fetch_batch_rows(batch_id: str) -> list[dict[str, Any]]:
             {
                 "filename": filename,
                 "full_name": data.get("full_name", "Unknown"),
+                "email": data.get("email", "Not found"),
                 "designation": data.get("suggested_role", "Unclassified"),
                 "experience": data.get("total_experience_years", 0),
                 "nebosh": "YES" if data.get("certifications", {}).get("nebosh") else "NO",
