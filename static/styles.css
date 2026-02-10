@@ -1,0 +1,149 @@
+:root {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #1f2937;
+}
+body {
+  margin: 0;
+  background: #f3f4f6;
+}
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+.subtitle {
+  margin-top: -0.5rem;
+  color: #6b7280;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+.panel {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.error {
+  border-left: 4px solid #dc2626;
+}
+label {
+  display: block;
+  font-weight: 600;
+  margin-top: 0.8rem;
+  margin-bottom: 0.3rem;
+}
+input,
+textarea,
+button {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+button {
+  margin-top: 1rem;
+  background: #1d4ed8;
+  color: white;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+.score {
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+  border-radius: 6px;
+  background: #dbeafe;
+}
+.actions {
+  display: flex;
+  gap: 0.7rem;
+  margin-bottom: 0.8rem;
+}
+.action-btn {
+  display: inline-block;
+  text-decoration: none;
+  background: #111827;
+  color: white;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+}
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 0.8rem;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 980px;
+}
+th,
+td {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #e5e7eb;
+}
+.clean-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.clean-list li {
+  margin-bottom: 0.4rem;
+}
+.bad {
+  color: #b91c1c;
+}
+@media (max-width: 880px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.inspector-row td {
+  background: #ecfdf5;
+  font-weight: 600;
+}
+
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+.brand-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #d1d5db;
+  background: #fff;
+}
+.upload-preview {
+  margin-top: 0.8rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.6rem;
+}
+.upload-preview ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1rem;
+}
+.upload-preview li {
+  margin-bottom: 0.2rem;
+}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resume Screening MVP</title>
+  <link rel="icon" type="image/png" href="https://www.multiply-marketing.com/trojan-wp/wp-content/uploads/2020/08/tgc-logo-300x300.png" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="brand-header">
+      <img
+        class="brand-logo"
+        src="https://www.multiply-marketing.com/trojan-wp/wp-content/uploads/2020/08/tgc-logo-300x300.png"
+        alt="TGC Logo"
+      />
+      <div>
+        <h1>Resume Screening MVP</h1>
+        <p class="subtitle">Upload multiple resumes, auto-tag designation (4 years => Inspector), and export to Excel/PDF.</p>
+      </div>
+    </header>
+
+    {% if errors %}
+      <div class="panel error">
+        <h3>Validation errors</h3>
+        <ul>
+          {% for error in errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <div class="grid">
+      <section class="panel">
+        <h2>1) Upload Resumes</h2>
+        <form action="/screen" method="post" enctype="multipart/form-data">
+          <label>Resume files (PDF/TXT, max 10MB each)</label>
+          <input id="resume_files" type="file" name="resume_files" accept=".pdf,.txt" multiple required />
+
+          <div class="upload-preview" id="upload_preview">
+            <strong>Selected files preview:</strong>
+            <ul id="preview_list">
+              <li>No files selected yet.</li>
+            </ul>
+          </div>
+
+          <h2>2) Job Requirements</h2>
+          <label>Job Description</label>
+          <textarea name="job_description" rows="6" placeholder="Paste job description and required certifications..."></textarea>
+
+          <label>Required Skills (comma separated)</label>
+          <input type="text" name="required_skills" placeholder="nebosh, adosh, risk assessment" />
+
+          <div class="row">
+            <div>
+              <label>Minimum Experience (years)</label>
+              <input type="number" step="0.5" min="0" name="min_experience" value="0" />
+            </div>
+            <div>
+              <label>Required Education</label>
+              <input type="text" name="required_education" placeholder="Bachelor / Level 6" />
+            </div>
+          </div>
+
+          <button type="submit">Process Batch</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>3) Screening Results</h2>
+        {% if result %}
+          <div class="score">
+            Batch Processed: <strong>{{ result.count }}</strong> resumes |
+            Average Match Score: <strong>{{ result.average_score }}%</strong>
+          </div>
+
+          <div class="actions">
+            <a class="action-btn" href="/export/excel/{{ result.batch_id }}">Download Excel</a>
+            <a class="action-btn" href="/export/pdf/{{ result.batch_id }}">Download PDF</a>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Candidate</th>
+                  <th>Designation</th>
+                  <th>Experience</th>
+                  <th>NEBOSH</th>
+                  <th>ADOSH</th>
+                  <th>LEVEL 6</th>
+                  <th>Nature of Experience</th>
+                  <th>Match Score</th>
+                  <th>Inspector Highlight</th>
+                  <th>Band Match</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in result.rows %}
+                <tr class="{% if row.inspector_highlight %}inspector-row{% endif %}">
+                  <td>{{ row.filename }}</td>
+                  <td>{{ row.full_name }}</td>
+                  <td>{{ row.designation }}</td>
+                  <td>{{ row.experience }} Y</td>
+                  <td>{{ row.nebosh }}</td>
+                  <td>{{ row.adosh }}</td>
+                  <td>{{ row.level_6 }}</td>
+                  <td>{{ row.nature_of_experience }}</td>
+                  <td>{{ row.match_score }}%</td>
+                  <td>{{ "YES" if row.inspector_highlight else "NO" }}</td>
+                  <td>{{ row.preferred_band }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Details Per Candidate</h3>
+          <ul class="clean-list">
+            {% for row in result.rows %}
+            <li>
+              <strong>{{ row.full_name }}</strong> ({{ row.filename }}) —
+              Skills: {{ row.skills }} |
+              Degree: {{ row.degree }} |
+              Missing: <span class="bad">{{ row.missing_requirements }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>Results preview will appear here after processing resumes.</p>
+        {% endif %}
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const input = document.getElementById('resume_files');
+    const list = document.getElementById('preview_list');
+
+    input.addEventListener('change', () => {
+      const files = Array.from(input.files || []);
+      list.innerHTML = '';
+
+      if (!files.length) {
+        const item = document.createElement('li');
+        item.textContent = 'No files selected yet.';
+        list.appendChild(item);
+        return;
+      }
+
+      files.forEach((file) => {
+        const item = document.createElement('li');
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        item.textContent = `${file.name} (${sizeMB} MB)`;
+        list.appendChild(item);
+      });
+    });
+  </script>
+</body>
+</html>
