@@ -124,6 +124,15 @@ def index(request: Request) -> HTMLResponse:
     )
 
 
+@app.get("/index.html", response_class=HTMLResponse)
+@app.get("/templates/index.html", response_class=HTMLResponse)
+def index_compat(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request, "result": None, "errors": []},
+    )
+
+
 @app.post("/screen", response_class=HTMLResponse)
 async def screen_resume(
     request: Request,
